@@ -1,0 +1,42 @@
+services:
+  web:
+    image: Ynov-nginx-image
+    build: .
+    ports:
+      - "9090:80"
+    networks:
+      - frontend
+
+  app:
+    image: praqma/network-multitool
+    networks:
+      - frontend
+      - backend
+
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: P@ssw0rd
+    networks:
+      - backend
+    volumes:
+      - db_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "8080:80"
+    networks:
+      - backend
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge
+
+volumes:
+  db_data:
